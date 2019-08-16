@@ -1,0 +1,70 @@
+{% extends "economiza/base.html" %}
+{% block body_block %}
+{% load static %}
+
+<div class="box">
+    <div class="row">
+        <div class="col-4">
+            <h2>Limite definido:<br> <span id='limit_globe'style="color: #85bb65">{{user.perfil.limite}}</span></h2>
+        </div>
+        <div class="col-4">
+            {% if limites_categorias %}
+            <h2>Limites por categoria:</h2>
+            {% for limite in limites_categorias %}
+            <h4><span id="category-limit">{{limite.categoria_nome}}</span>: R$ <span class="category_limit_id" id="value_category_limit_{{limite.id}}" data-id="{{limite.id}}" style="color: #85bb65;">{{limite.limite_categoria}}<br></span></h4>
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-4">
+            <button type="button" class="btn btn-info" id="add_gasto" data-url="{% url 'economiza:add_gasto' %}"><img src="{% static 'images/icons/shopping-cart-add-button.png' %}" id="icon" style=" filter: invert(1);"> Adicionar um gasto</button>
+            <h3 style="display: none; margin-top: 10%" id="text-use-all-limit" >Não é possível adicionar mais gastos! Limite utilizado 100%</h3>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-hover table-dark text-center">
+    <thead>
+        <tr>
+        <th scope="col">Data</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Descrição</th>
+        <th scope="col">Preço</th>
+        <th scope="col">Quantidade</th>
+        <th scope="col">Total</th>
+        <th scope="col">Excluir</th>
+        </tr>
+    </thead>
+    {% if gastos %}
+    {% for gasto in gastos %}
+    <tbody class="text-center">
+        <tr>
+        <td>{{gasto.data.date}}</td>
+        <td id="{{gasto.categoria.id}}" class="id_category_table" data-id='{{gasto.categoria.id}}'>{{gasto.categoria.categoria_nome}}</td>
+        <td>{{gasto.descricao}}</td>
+        <td style="color: #85bb65">R$ {{gasto.preco}}</td>
+        <td>{{gasto.quantidade}}x</td>
+        <td class='total_field' id="total_field_{{gasto.categoria.id}}" data-id='{{gasto.categoria.id}}' style="color: #85bb65">{{gasto.total_item_filter}}</td>
+        <td>
+        <button type="button" class="delete_gasto btn btn-sm btn-danger" data-id="{% url 'economiza:delete_gasto' gasto.pk %}" style="background-color: transparent; border: none !important;">
+            <img src="{% static 'images/icons/x-button.png' %}" style="height: 20px;" alt="">
+        </button></td>
+        </tr>
+    </tbody>
+    {% endfor %}
+    <div id="total" style="display: none;"></div>
+    {% else %}
+    <h1>Nenhum gasto cadastrado!</h1>
+    {% endif %}
+</table>
+   
+   </h1>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+    
+
+{% endblock body_block %}

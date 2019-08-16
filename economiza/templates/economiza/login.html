@@ -1,0 +1,35 @@
+{% extends "economiza/base.html" %}
+{% block body_block %}
+<div class="container">
+    <div class="jumbotron" style="margin-top: 40px;">
+      <h1>Login</h1>
+
+        <form method="post" action="{% url 'economiza:user_login' %}" class="form-inline">
+          {% csrf_token %}
+          <label class="sr-only" for="username">Username</label>
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" id="username" name='username' placeholder="Username" maxlength="128">
+                <p><small class="caracteres"></small></p> 
+            </div>
+
+          <label class="sr-only" for="password"></label>
+          <input class="form-control mb-2 mr-sm-2" type="password" name="password" placeholder="Password" maxlength="128">
+
+          <input class="btn btn-primary" type="submit" name="" value="Login" style="margin-bottom: 10px;">
+
+        </form>
+        {% for message in messages %}
+
+          <div class="alert alert-danger">
+            
+
+              {{ message }}
+
+          </div>
+            {% endfor %}
+    </div>
+  </div>
+{% endblock body_block %}

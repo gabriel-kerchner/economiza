@@ -1,0 +1,49 @@
+{% extends "economiza/base.html" %}
+{% block body_block %}
+
+{% load crispy_forms_tags %}
+
+{% if registered %}
+  
+{% endif %}
+<div class="jumbotron">
+    <h1 class="card-body text-center">Cadastre-se</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6">
+                {{perfil_form.nome|as_crispy_field}}
+            </div>
+            <div class="col-6">
+                {{perfil_form.sobrenome|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                {{perfil_form.sexo|as_crispy_field}}
+            </div>
+            <div class="col-4">
+                {{perfil_form.idade|as_crispy_field}}
+            </div>
+            <div class="col-4">
+                {{perfil_form.telefone|as_crispy_field}}
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-4">
+                {{perfil_form.email|as_crispy_field}}
+            </div>
+            <div class="col-4">
+                {{user_form.username|as_crispy_field}}
+            </div>
+            <div class="col-4">
+                {{user_form.password|as_crispy_field}}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+    </form>
+</div>
+
+
+{% endblock body_block %}

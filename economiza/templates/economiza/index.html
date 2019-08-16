@@ -1,0 +1,40 @@
+{% extends "economiza/base.html" %}
+{% block body_block %}
+
+<div class="jumbotron text-center" style="margin-top: 150px;">
+    {% if user.is_authenticated %}
+    <h1>Olá {{user.perfil.nome}}, Seja bem vindo ao Economiza!</h1>
+    <h2>Determine o limite máximo para controle dos gastos:</h2>
+    <input type="text" class="js-range-slider-1" value="">
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="limit_global">
+            <h4 style="margin-top: 20px;  display: none">Limite definido para R$ <span id="value_limit_global" style="color: #85bb65;">{{value_limit_global}}</span></h4>
+            <div class="form-check limite_categoria" style="display: none">
+                <h4 style="margin-top: 60px;"><input class="form-check-input" id="limite_categoria" type="checkbox" style="height: 15px; width: 15px;">Quero definir limite por categoria!</h4>
+            </div>
+            <hr style="display: None;">
+            <div class="limites_categorias" style="display: None; margin-top: 30px;">
+                    <h4>Você tem R$ <span id="value_limit_available" style="color: #85bb65;" ></span> à distribuir:</h4>
+                {% for categoria in categorias %} 
+                <div class="row">
+                    <div class="col-6">
+                        <h4 style="margin-top: 20px; text-align: right">{{categoria.categoria_nome}}</h4>
+                    </div>
+                    <div class="col-3">
+                        <input type="text" id="category_limit_{{categoria.id}}"  value="{{limit_by_category_id|get_item:categoria.id}}" data-id="{{categoria.id}}" style="margin-top: 20px;" class="category_limit align-left">
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+           <button id='save_button' type="submit" class="btn btn-dark" style="margin-top: 30px; background-color: #4d0270">Salvar</button>
+            
+        </div>
+    {% else %}
+    <h1>Seja bem vindo ao Economiza! <br> Cadastre-se para ter acesso ao site!</h1>
+    {% endif %}
+    
+    
+</div>
+{% endblock body_block %}

@@ -1,0 +1,49 @@
+#icon_invert{
+    filter: invert(1);
+    height: 22px;
+}
+
+body{
+    background: url("/static/images/background.jpg");
+}
+
+.jumbotron{
+    background-color: #d4d2d2;
+    margin-top: 40px;
+}
+
+#icon{
+    height: 30px;
+}
+
+.box{
+  background-color: #d4d2d2;
+  text-align: center;
+  margin: 10px 0px 20px;   
+  padding: 10px 0px 10px;
+
+}
+
+#just-a-slider {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+
+  height: 60px;
+  width: 740px;
+  border-radius: 3px;
+}
+
+#just-a-slider .handle {
+  height: 60px;
+  line-height: 60px;
+  border-radius: 3px;
+}
+
+#just-a-slider .value {
+  padding: 0 0 0 5px;
+  font-size: 30px;
+  font-weight: bold;
+}
