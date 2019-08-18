@@ -14,5 +14,6 @@ urlpatterns = [
     path('gastos/adicionar', views.GastoCreateView.as_view(), name='add_gasto'),
     path('gastos/apagar/<int:pk>', views.GastoDeleteView.as_view(), name='delete_gasto'),
     path('salvar-limite/', views.save_limits, name='save_limits'),
+    path('select_month_year_and_category/', views.select_month_year_and_category, name='selected_month'),
     path('sobre/', views.about, name='about')
 ]

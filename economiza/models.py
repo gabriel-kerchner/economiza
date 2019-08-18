@@ -50,7 +50,7 @@ class Perfil(models.Model):
 
 class Gasto(models.Model):
   
-    data = models.DateTimeField('Data da compra', auto_now_add=True)
+    data_do_gasto = models.DateField(null=True)
     categoria = models.ForeignKey(Categoria, related_name='gasto', on_delete=models.CASCADE)
     descricao = models.CharField(max_length=150)
     preco = models.FloatField()
@@ -59,7 +59,7 @@ class Gasto(models.Model):
 
     @register.filter
     def total_item_filter(self):
-        return self.quantidade * self.preco
+        return  self.quantidade * self.preco
 
     @property
     def limite_modify(self):

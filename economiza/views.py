@@ -7,9 +7,10 @@ from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.contrib.auth.decorators import login_required
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from .models import Perfil, Gasto, Categoria
-from .forms import PerfilForm, UserForm, GastoForm, LimitGlobalForm, LimitCategoryForm
+from .forms import PerfilForm, UserForm, GastoForm
 from django.contrib import messages
 from django.db.models import F
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 
@@ -109,14 +110,95 @@ def user_logout(request):
     # Return to homepage.
     return HttpResponseRedirect(reverse('economiza:index'))
 
+@csrf_exempt
 @login_required
 def get_gastos(request):
-    list_gastos = Gasto.objects.filter(user=request.user)
+    
+    list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
     list_limits_categories = Categoria.objects.filter(user=request.user)
-
     gasto_form = GastoForm(request.POST)
 
-    return render(request, 'economiza/gastos.html', {'gastos': list_gastos, 'gasto_form': gasto_form, 'limites_categorias': list_limits_categories})
+    return render(request, 'economiza/gastos.html', {'gastos': list_gastos, 'gasto_form': gasto_form,
+     'limites_categorias': list_limits_categories})
+
+
+@csrf_exempt
+@login_required
+def select_month_year_and_category(request):
+    
+    if request.method == 'GET' and request.is_ajax():
+        
+        
+        selected_month = request.GET['selected_month']
+        selected_year = request.GET['selected_year']
+        selected_category = request.GET['selected_category']
+       
+      
+        if selected_month == '0' and selected_year == '0' and selected_category == '0':
+            list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
+            
+
+        if selected_month != '0' and selected_year == '0' and selected_category == '0': 
+            list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__month=selected_month).order_by('data_do_gasto')
+          
+
+        if selected_year != '0' and selected_month == '0' and selected_category == '0':
+            list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__year=selected_year).order_by('data_do_gasto')
+
+
+        if selected_category != '0' and selected_month == '0' and selected_year == '0':
+            list_gastos = Gasto.objects.filter(user=request.user, categoria__id=selected_category).order_by('data_do_gasto')
+
+        if selected_category != '0' and selected_month != '0' and selected_year == '0':
+            list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__month=selected_month,
+                                                                  categoria__id=selected_category).order_by('data_do_gasto')
+
+        if selected_category != '0' and selected_month == '0' and selected_year != '0':
+            list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__year=selected_year,
+                                                                  categoria__id=selected_category).order_by('data_do_gasto')
+
+        if selected_year != "0" and selected_month != "0" and selected_category != "0":
+            list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__month=selected_month,
+                                                                  data_do_gasto__year=selected_year,
+                                                                  categoria__id=selected_category).order_by('data_do_gasto')
+
+        if selected_year != "0" and selected_month != "0" and selected_category == "0":
+            list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__month=selected_month,
+                                                                  data_do_gasto__year=selected_year).order_by('data_do_gasto')
+    else:
+        selected_month = ''
+        list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
+
+    
+    list_limits_categories = Categoria.objects.filter(user=request.user)
+    gasto_form = GastoForm(request.POST)
+
+    return render(request, 'economiza/filter_month_year_and_category.html', {'gastos': list_gastos, 'gasto_form': gasto_form,
+     'limites_categorias': list_limits_categories})
+
+@csrf_exempt
+@login_required
+def select_category(request):
+    
+    if request.method == 'GET' and request.is_ajax():
+        selected_category = request.GET['selected_category']
+        if selected_category == '0':
+            list_limits_categories = Categoria.objects.filter(user=request.user)
+        else:
+            list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
+            list_limits_categories = Categoria.objects.filter(user=request.user, id__month=selected_month)
+    else:
+        selected_month = ''
+        list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
+
+    
+    
+    gasto_form = GastoForm(request.POST)
+
+    return render(request, 'economiza/filter_category.html', {'gastos': list_gastos, 'gasto_form': gasto_form,
+     'limites_categorias': list_limits_categories})
+
+
 
 class GastoCreateView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'economiza/gasto_form.html'
@@ -124,14 +206,20 @@ class GastoCreateView(LoginRequiredMixin, BSModalCreateView):
     success_url = reverse_lazy('economiza:get_gastos')
 
 
+    def get_form(self, *args, **kwargs):
+        form = super(GastoCreateView, self).get_form(*args, **kwargs)
+        form.fields['categoria'].queryset = Categoria.objects.filter(user=self.request.user)
+        return form
+
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(GastoCreateView, self).form_valid(form)
+        form.instance.user_id = self.request.user.pk
+        return super().form_valid(form)
 
 class GastoDeleteView(BSModalDeleteView):
     model = Gasto
     template_name = 'economiza/delete_gasto.html'
     success_url = reverse_lazy('economiza:get_gastos')
+    success_message = ""
 
 
 

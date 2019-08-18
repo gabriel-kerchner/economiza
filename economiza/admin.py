@@ -8,8 +8,8 @@ class PerfilAdmin(admin.ModelAdmin):
 
 @admin.register(Gasto)
 class PerfilAdmin(admin.ModelAdmin):
-    list_display = ('data', 'categoria', 'descricao')
+    list_display = ('categoria', 'descricao')
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ('categoria_nome', 'limite_categoria')
+    list_display = ('categoria_nome', 'limite_categoria', 'user')

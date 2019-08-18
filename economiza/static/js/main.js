@@ -4,6 +4,7 @@ $(document).ready(function() {
   });
 })
 
+
 $(document).ready(function() {
   $(".delete_gasto").each(function () {
     $(this).modalForm({formURL: $(this).data('id')});
@@ -21,16 +22,6 @@ $(document).ready(function() {
     $("hr").show();
     $(".limite_categoria").show()
     $(".limite_categoria").prop('checked', true);
-  }
-
-})
-
-
-$(function(){
- 
-  var count = $('#count tr').length;
-  for (var i = 0; i < rows.length; i++) {
-    $(rows).html(i)
   }
 
 })
@@ -66,18 +57,25 @@ $(function(){
 $(function(){
 
  
-  var id_category_limit = $('.category_limit_id').attr("data-id");
   var id_category_table = $('.id_category_table').attr("data-id");
   var id_total_category = $('.total_field').attr("data-id");
 
-  var value_category_limit = $('#value_category_limit_' + id_category_limit).text()
-  var limit_globe = $('#limit_globe').text()
-  var total_field = $('#total').text()
+  var categories_ids = []
+  $('.category_limit_id').each(function () {
+    categories_ids.push($(this).data('id'))
+  })
 
-  var result_global_limit =  limit_globe - total_field
+  var limit_globe = $('#limit_globe').text();
+  var total_field = $('#total').text();
+
+  var result_global_limit =  limit_globe - total_field;
   
 
-  $('#limit_globe').html("R$ " + result_global_limit)
+  $('#limit_globe').html(result_global_limit);
+  categories_ids.forEach((id_category_table) => {
+
+  var value_category_limit = $('#value_category_limit_' + id_category_table).text()
+  
 
   // Colors of Global Limit
   if (result_global_limit < 0) {
@@ -96,10 +94,13 @@ $(function(){
     $('#limit_globe').css('color', '#85bb65')
   }
 
-  if (id_total_category == id_category_table) {
-    var result_category_limit = value_category_limit - $('#total_field_' + id_total_category).text()
-    $('#value_category_limit_' + id_category_table).html(result_category_limit)
   
+    var result_category_limit = value_category_limit;
+    $('.total_field[data-id="' + id_category_table + '"]').each( function () {
+      result_category_limit -= $(this).text();
+    })
+    $('#value_category_limit_' + id_category_table).html(result_category_limit)
+    
     // Colors of Categories Limits
     if (result_category_limit < 0) {
       $('#value_category_limit_' + id_category_table).css('color', 'red')
@@ -116,8 +117,7 @@ $(function(){
     if (result_category_limit >= 0.66 * value_category_limit) {
       $('#value_category_limit_' + id_category_table).css('color', '#85bb65')
     }
-
-  }
+  });
 })
 
 
@@ -234,6 +234,76 @@ $("#save_button").click(function (event) {
   });
 });
 
-
+$(function() {
+  $("#filter_month").change(function (){
+    var selected_month = parseInt($(this).val())
+    var selected_year = parseInt($("#filter_year").val())
+    var selected_category = parseInt($("#filter_category").val())
+    $.ajax({
+      type: "GET",
+      url: "/select_month_year_and_category/",
+      dataType: 'html',
+      data: {
+        selected_month: selected_month,
+        selected_year: selected_year,
+        selected_category: selected_category
+      },
+      success: function(data) {
+        $("tbody").empty();
+        $("#gasto_table").hide()
+        $("#update_table_gasto").html(data)
+        
+      }
+    })
+  })
 })
+$(function() {
+  $("#filter_year").change(function (){
+    var selected_month = parseInt($("#filter_month").val())
+    var selected_year = parseInt($(this).val())
+    var selected_category = parseInt($("#filter_category").val())
+    $.ajax({
+      type: "GET",
+      url: "/select_month_year_and_category/",
+      dataType: 'html',
+      data: {
+        selected_month: selected_month,
+        selected_year: selected_year,
+        selected_category: selected_category
+      },
+      success: function(data) {
+        $("tbody").empty();
+        $("#gasto_table").hide()
+        $("#update_table_gasto").html(data)
+        
+      }
+    })
+  })
+})
+
+$(function() {
+  $("#filter_category").change(function (){
+    var selected_month = parseInt($("#filter_month").val())
+    var selected_year = parseInt($("#filter_year").val())
+    var selected_category = parseInt($(this).val())
+    $.ajax({
+      type: "GET",
+      url: "/select_month_year_and_category/",
+      dataType: 'html',
+      data: {
+        selected_month: selected_month,
+        selected_year: selected_year,
+        selected_category: selected_category
+      },
+      success: function(data) {
+        $("tbody").empty();
+        $("#gasto_table").hide()
+        $("#update_table_gasto").html(data)
+        
+      }
+    })
+  })
+})
+})
+
 

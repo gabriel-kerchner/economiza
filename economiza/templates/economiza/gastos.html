@@ -5,7 +5,7 @@
 <div class="box">
     <div class="row">
         <div class="col-4">
-            <h2>Limite definido:<br> <span id='limit_globe'style="color: #85bb65">{{user.perfil.limite}}</span></h2>
+            <h2>Limite definido:<br>R$ <span id='limit_globe'style="color: #85bb65">{{user.perfil.limite}}</span></h2>
         </div>
         <div class="col-4">
             {% if limites_categorias %}
@@ -23,7 +23,7 @@
 </div>
 
 
-<table class="table table-hover table-dark text-center">
+<table class="table table-hover table-dark text-center" id="gasto_table">
     <thead>
         <tr>
         <th scope="col">Data</th>
@@ -31,15 +31,63 @@
         <th scope="col">Descrição</th>
         <th scope="col">Preço</th>
         <th scope="col">Quantidade</th>
-        <th scope="col">Total</th>
+        <th scope="col">Total (R$)</th>
         <th scope="col">Excluir</th>
         </tr>
     </thead>
     {% if gastos %}
+    <div class="row">
+        <div class="col-4">
+            <div class="form-group">
+                <h5 for='sel2'><img src="{% static 'images/icons/magnifier.png' %}" style="height: 25px;"> Filtrar por Categoria:</h5>
+                <select class="form-control" id="filter_category">
+                    <option value="0">Todas</option>
+                    {% for categoria in limites_categorias %}
+                    <option value="{{categoria.id}}">{{categoria.categoria_nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            </div>
+        <div class="col-4">
+            <div class="form-group">
+                <h5 for="sel1"><img src="{% static 'images/icons/magnifier.png' %}" style="height: 25px;"> Filtrar por Mês: </h5>
+                <select class="form-control" id="filter_month">
+                    <option value="0">Todos</option>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="form-group">
+                <h5 for='sel3'><img src="{% static 'images/icons/magnifier.png' %}" style="height: 25px;"> Filtrar por Ano:</h5>
+                <select class="form-control" id="filter_year">
+                    <option value="0">Todos</option>
+                    {% for gasto in gastos %}
+                    {% ifchanged gasto.data_do_gasto.year %} 
+                    <option value="{{gasto.data_do_gasto.year}}">{{gasto.data_do_gasto.year}}</option>
+                    {% endifchanged %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+    </div>
+    
     {% for gasto in gastos %}
     <tbody class="text-center">
         <tr>
-        <td>{{gasto.data.date}}</td>
+        <td>{{gasto.data_do_gasto}}</td>
         <td id="{{gasto.categoria.id}}" class="id_category_table" data-id='{{gasto.categoria.id}}'>{{gasto.categoria.categoria_nome}}</td>
         <td>{{gasto.descricao}}</td>
         <td style="color: #85bb65">R$ {{gasto.preco}}</td>
@@ -50,12 +98,14 @@
             <img src="{% static 'images/icons/x-button.png' %}" style="height: 20px;" alt="">
         </button></td>
         </tr>
+        <div id="update_table_gasto"></div>
     </tbody>
     {% endfor %}
     <div id="total" style="display: none;"></div>
     {% else %}
     <h1>Nenhum gasto cadastrado!</h1>
     {% endif %}
+
 </table>
    
    </h1>

@@ -3,6 +3,8 @@ from django import forms
 from .models import Perfil, Gasto, Categoria
 from django.contrib.auth.models import User
 from bootstrap_modal_forms.forms import BSModalForm
+from bootstrap_datepicker_plus import DatePickerInput
+from tempus_dominus.widgets import DatePicker
 
 
 class PerfilForm(forms.ModelForm):
@@ -20,24 +22,23 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'password']
 
 class GastoForm(BSModalForm):
-
+        
+    data_do_gasto = forms.DateTimeField(widget=DatePicker(
+        options={
+            'format': 'D/MM/Y',
+        },
+        attrs={
+            'append': 'fa fa-calendar',
+            'icon_toggle': True,
+        }
+    ), input_formats=('%d/%m/%Y', ))
     class Meta:
         model = Gasto
-        fields = ['categoria', 'descricao', 'preco', 'quantidade']
+        fields = ['data_do_gasto', 'categoria', 'descricao', 'preco', 'quantidade']
+        ordering = ('data_do_gasto',)
 
 
-class LimitGlobalForm(forms.ModelForm):
 
-    class Meta:
-        model = Perfil
-        fields = ['limite']
-        
-
-class LimitCategoryForm(forms.ModelForm):
-
-    class Meta:
-        model = Categoria
-        fields = ['categoria_nome', 'limite_categoria']
 
 
 

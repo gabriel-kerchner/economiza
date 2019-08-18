@@ -40,10 +40,13 @@ INSTALLED_APPS = [
     'economiza',
     'crispy_forms',
     'widget_tweaks',
-    'bootstrap_modal_forms'
+    'bootstrap_modal_forms',
+    'tempus_dominus'
 ]
 
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+TEMPUS_DOMINUS_LOCALIZE = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,9 +139,11 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
+
+DATE_FORMAT = "d/m/Y"
 
 
 # Static files (CSS, JavaScript, Images)
