@@ -16,7 +16,11 @@ $(document).ready(function() {
       has_at_least_one_category_limit = true
     }}
   );
-  
+  if ($("#value_limit_global").text() > 0) {
+    $(".limite_categoria").show()
+  }
+
+
   if (has_at_least_one_category_limit == true){
     $(".limites_categorias").show();
     $("hr").show();
@@ -35,6 +39,7 @@ $(function(){
       $("hr").show();
       $('#save_button').attr("disabled", true);
       $('#save_button').css('background-color', 'grey');
+      calculate_available_limit_for_categories()
     } else {
       $(".limites_categorias").hide();
       $('#save_button').attr("disabled", false);
@@ -55,9 +60,8 @@ $(function(){
 });
 
 
-$(function(){
+function calculate_table_limits(){
 
- 
   var id_category_table = $('.id_category_table').attr("data-id");
   var id_total_category = $('.total_field').attr("data-id");
 
@@ -136,9 +140,9 @@ $(function(){
       $('#value_category_limit_' + id_category_table).css('color', '#85bb65')
     }
   });
-})
+}
+$(function(){calculate_table_limits()});
 
-$(function() {})
 
 $(function() {
 
@@ -241,6 +245,7 @@ $(function() {
         $("tbody").empty();
         $("#gasto_table").hide()
         $("#update_table_gasto").html(data)
+        calculate_table_limits()
         
       }
     })
@@ -264,7 +269,7 @@ $(function() {
         $("tbody").empty();
         $("#gasto_table").hide()
         $("#update_table_gasto").html(data)
-        
+        calculate_table_limits()
       }
     })
   })
