@@ -4,7 +4,7 @@
 <div class="jumbotron text-center" style="margin-top: 150px;">
     {% if user.is_authenticated %}
     <h1>Olá {{user.perfil.nome}}, Seja bem vindo ao Economiza!</h1>
-    <h2>Determine o limite máximo para controle dos gastos:</h2>
+    <h2>Determine o limite mensal de gastos adequado para sua renda:</h2>
     <input type="text" class="js-range-slider-1" value="">
 
     <form action="" method="post">
@@ -23,7 +23,7 @@
                         <h4 style="margin-top: 20px; text-align: right">{{categoria.categoria_nome}}</h4>
                     </div>
                     <div class="col-3">
-                        <input type="text" id="category_limit_{{categoria.id}}"  value="{{limit_by_category_id|get_item:categoria.id}}" data-id="{{categoria.id}}" style="margin-top: 20px;" class="category_limit align-left">
+                        <input type="text" id="111"  value="{{limit_by_category_id|get_item:categoria.id}}" data-id="{{categoria.id}}" style="margin-top: 20px;" class="category_limit align-left">
                     </div>
                 </div>
                 {% endfor %}
@@ -37,4 +37,22 @@
     
     
 </div>
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="successModalLabel">Sucelso</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Seu sucelso foi bem suceldido !
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 {% endblock body_block %}

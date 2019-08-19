@@ -233,21 +233,19 @@ def get_item(dictionary, key):
 def save_limits(request):
 
     if request.method=='POST' and request.is_ajax():
+        value_global_limit = request.POST['value_global_limit']
+        limit_by_category_id =  json.loads(request.POST['limit_by_category_id'])
+        
+        
+        perfil = Perfil.objects.filter(user=request.user)
+        perfil.update(limite=value_global_limit)
 
-    
-            value_global_limit = request.POST['value_global_limit']
-            limit_by_category_id =  json.loads(request.POST['limit_by_category_id'])
-            
-            
-            perfil = Perfil.objects.filter(user=request.user)
-            perfil.update(limite=value_global_limit)
-
-            categorias = Categoria.objects.filter(user=request.user)
-            for categoria in categorias:
-                categoria.limite_categoria = limit_by_category_id[str(categoria.pk)]
-                categoria.save()
-
-            return HttpResponseRedirect(reverse('economiza:get_gastos'))
+        categorias = Categoria.objects.filter(user=request.user)
+        for categoria in categorias:
+            categoria.limite_categoria = limit_by_category_id[str(categoria.pk)] or 0
+            categoria.save()
+        
+        return HttpResponseRedirect(reverse('economiza:get_gastos'))
     
             
             
