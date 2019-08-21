@@ -21,8 +21,8 @@
     </div>
 </div>
 
-<div id="limit_globe_filter"></div>
-<div id="total"></div>
+<div id="limit_globe_filter" style="display: none"></div>
+<div id="total" style="display: none"></div>
 <table class="table table-hover table-dark text-center" id="gasto_table">
     <thead>
         <tr>
@@ -75,7 +75,7 @@
                     <option value="0">Todos</option>
                     {% for gasto in gastos %}
                     {% ifchanged gasto.data_do_gasto.year %} 
-                    <option value="{{gasto.data_do_gasto.year}}">{{gasto.data_do_gasto.year}}</option>
+                    <option value="{{gasto.data_do_gasto.year}}" selected>{{gasto.data_do_gasto.year}}</option>
                     {% endifchanged %}
                     {% endfor %}
                 </select>

@@ -60,8 +60,9 @@ var ajax_running = false;
 var value_limit_by_category_id = {}
 function calculate_table_limits(){
   
-  var id_category_table = $('.id_category_table').attr("data-id");
+  
   var id_total_category = $('.total_field').attr("data-id");
+  var id_category_table = $('.id_category_table').attr("data-id");
 
   if (id_total_category == null) {
     id_total_category = 0
@@ -86,6 +87,7 @@ function calculate_table_limits(){
     total_ids.push($(this).data('id'));
     total_field_filtered += parseInt($(this).text())
   });
+  
   if (total_ids == undefined || total_ids.length == 0){
     total_ids = [0]
   }
@@ -103,7 +105,7 @@ function calculate_table_limits(){
     if (ajax_running == true){
       var result_global_limit =  limit_globe_filter - total_field_filtered;
     } else{
-      var result_global_limit =  limit_globe - total_field;
+      var result_global_limit =  limit_globe_filter - $("#total").text();
     }
     if (limit_globe == "None"){
       $('#limit_globe').css('color', 'black');
@@ -112,9 +114,10 @@ function calculate_table_limits(){
     } else {
       $('#limit_globe').html(result_global_limit.toFixed(2));
     }
-
+    
   categories_ids.forEach((id_category_table) => {
 
+   
     var value_category_limit = $('#value_category_limit_' + id_category_table).text()
   
   // Colors of Global Limit
@@ -133,16 +136,15 @@ function calculate_table_limits(){
     if (result_global_limit >= 0.66 * limit_globe) {
       $('#limit_globe').css('color', '#85bb65')
     }
-    if (ajax_running == true){
+      
       var value_category_limit_filtered = value_limit_by_category_id[id_category_table] 
       var result_category_limit = value_category_limit_filtered
-    } else {
-      var result_category_limit = value_category_limit;
-    }
+  
     $('.total_field[data-id="' + id_category_table + '"]').each( function () {
       
 
-        result_category_limit -= $("#total_field_" + id_category_table).text();
+        result_category_limit -= $(this).text();
+        
       
     })
     if (result_category_limit == NaN) {
