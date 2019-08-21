@@ -5,32 +5,40 @@
         <th scope="col">Data</th>
         <th scope="col">Categoria</th>
         <th scope="col">Descrição</th>
-        <th scope="col">Preço</th>
+        <th scope="col">Preço (R$)</th>
         <th scope="col">Quantidade</th>
         <th scope="col">Total (R$)</th>
         <th scope="col">Excluir</th>
         </tr>
     </thead>
     {% if gastos %}
-{% for gasto in gastos %}
-<tbody class="text-center">
-    <tr>
-    <td>{{gasto.data_do_gasto}}</td>
-    <td id="{{gasto.categoria.id}}" class="id_category_table" data-id='{{gasto.categoria.id}}'>{{gasto.categoria.categoria_nome}}</td>
-    <td>{{gasto.descricao}}</td>
-    <td style="color: #85bb65">R$ {{gasto.preco}}</td>
-    <td>{{gasto.quantidade}}x</td>
-    <td class='total_field' id="total_field_{{gasto.categoria.id}}" data-id='{{gasto.categoria.id}}' style="color: #85bb65">{{gasto.total_item_filter}}</td>
-    <td>
-    <button type="button" class="delete_gasto btn btn-sm btn-danger" data-id="{% url 'economiza:delete_gasto' gasto.pk %}" style="background-color: transparent; border: none !important;">
-        <img src="{% static 'images/icons/x-button.png' %}" style="height: 20px;" alt="">
-    </button></td>
-    </tr>
-    <div id="update_table_gasto"></div>
-</tbody>
-{% endfor %}
-<div id="total" style="display: none;"></div>
-{% else %}
-<h3>Nenhum gasto cadastrado!</h3>
-{% endif %}
+    {% for gasto in gastos %}
+    <tbody class="text-center" style="background-color: #525252">
+        <tr>
+        <td>{{gasto.data_do_gasto}}</td>
+        <td id="{{gasto.categoria.id}}" class="id_category_table" data-id='{{gasto.categoria.id}}'>{{gasto.categoria.categoria_nome}}</td>
+        <td>{{gasto.descricao}}</td>
+        <td style="color: #85bb65">{{gasto.preco|floatformat:2}}</td>
+        <td>{{gasto.quantidade}}x</td>
+        <td class='total_field' id="total_field_{{gasto.categoria.id}}" data-id='{{gasto.categoria.id}}' style="color: #85bb65">{{gasto.total_item_filter|floatformat:2}}</td>
+        <td>
+        <button type="button" class="delete_gasto btn btn-sm btn-danger" data-id="{% url 'economiza:delete_gasto' gasto.pk %}" style="background-color: transparent; border: none !important;">
+            <img src="{% static 'images/icons/x-button.png' %}" style="height: 20px;" alt="">
+        </button></td>
+        </tr>
+        <div id="update_table_gasto"></div>
+    </tbody>
+    {% endfor %}
+    {% else %}
+    <h3>Nenhum gasto cadastrado!</h3>
+    {% endif %}
+
+</table>
+   
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 

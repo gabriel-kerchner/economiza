@@ -22,7 +22,7 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'password']
 
 class GastoForm(BSModalForm):
-        
+    quantidade = forms.IntegerField(initial=1)
     data_do_gasto = forms.DateTimeField(widget=DatePicker(
         options={
             'format': 'D/MM/Y',

@@ -12,8 +12,11 @@ from django.contrib import messages
 from django.db.models import F
 from django.views.decorators.csrf import csrf_exempt
 import json
+import datetime
 
 
+
+today = datetime.date.today()
 # Create your views here.
 def index(request):
     categorias = None
@@ -113,8 +116,8 @@ def user_logout(request):
 @csrf_exempt
 @login_required
 def get_gastos(request):
-    
-    list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
+     
+    list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__month=today.month).order_by('data_do_gasto')        
     list_limits_categories = Categoria.objects.filter(user=request.user)
     gasto_form = GastoForm(request.POST)
 
@@ -165,10 +168,6 @@ def select_month_year_and_category(request):
         if selected_year != "0" and selected_month != "0" and selected_category == "0":
             list_gastos = Gasto.objects.filter(user=request.user, data_do_gasto__month=selected_month,
                                                                   data_do_gasto__year=selected_year).order_by('data_do_gasto')
-    else:
-        selected_month = ''
-        list_gastos = Gasto.objects.filter(user=request.user).order_by('data_do_gasto')
-
     
     list_limits_categories = Categoria.objects.filter(user=request.user)
     gasto_form = GastoForm(request.POST)

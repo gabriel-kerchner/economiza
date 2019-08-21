@@ -5,10 +5,11 @@ $(document).ready(function() {
 })
 
 
+
 $(document).ready(function() {
   $(".delete_gasto").each(function () {
     $(this).modalForm({formURL: $(this).data('id')});
-  })
+  }) 
   var has_at_least_one_category_limit = false
 
   $(".category_limit").each(function() {
@@ -49,68 +50,100 @@ $(function(){
   });
 });
 
-$(function(){
-  var total = 0;
+function delete_button(){
+  $(".delete_gasto").each(function () {
+    $(this).modalForm({formURL: $(this).data('id')});
+  })
+}
 
-  $(".total_field").each(function() {
-    total += parseInt($( this ).text());
-  });
-   $( "#total" ).text(total);
-  
-});
-
-
+var ajax_running = false;
+var value_limit_by_category_id = {}
 function calculate_table_limits(){
-
+  
   var id_category_table = $('.id_category_table').attr("data-id");
   var id_total_category = $('.total_field').attr("data-id");
 
+  if (id_total_category == null) {
+    id_total_category = 0
+  }
+
   var categories_ids = []
+  
   $('.category_limit_id').each(function () {
-    categories_ids.push($(this).data('id'))
+    var id = $(this).data('id')
+    categories_ids.push(id);
+    if (ajax_running == false){
+      value_limit_by_category_id[parseInt(id)] = parseInt($(this).text())
+    }
   })
 
-  var limit_globe = $('#limit_globe').text();
-  var total_field = $('#total').text();
-
-  var result_global_limit =  limit_globe - total_field;
+  console.log(value_limit_by_category_id);
   
-  if (limit_globe == "None"){
-    $('#limit_globe').css('color', 'black');
-    $('#limit_globe').html("Não definido")
-
-  } else {
-    $('#limit_globe').html(result_global_limit.toFixed(2));
+  
+  var total_ids = []
+  var total_field_filtered = 0
+  $(".total_field").each(function() {
+    total_ids.push($(this).data('id'));
+    total_field_filtered += parseInt($(this).text())
+  });
+  if (total_ids == undefined || total_ids.length == 0){
+    total_ids = [0]
   }
   
+  total_ids.forEach((id_total_category) => {
+    var total_field = $('#total_field_' + id_total_category).text()
+    $('#total').html(total_field_filtered)
+    
+    var limit_globe = $('#limit_globe').text(); //pega o valor do limite global ele ta buscando o texto das duas variaveis (limit_globe = "valor global definido") (limit_globe_filter = "") se vazia (limit_globe_filter = "valor global definido")
+    var limit_globe_filter = $("#limit_globe_filter").text() //define uma variável vazia ("default = vazio") o nome dela me dá uma semantica estranha, veka, limit globe filter ela pega o valor do limite global, define em uma variavel vazia e depois eu uso ela para realizar as contas 
+    if (!limit_globe_filter) { //se for estiver vazio
+      $("#limit_globe_filter").html(limit_globe) //escreve o valor global nessa var do filter 
+    }
+    
+    if (ajax_running == true){
+      var result_global_limit =  limit_globe_filter - total_field_filtered;
+    } else{
+      var result_global_limit =  limit_globe - total_field;
+    }
+    if (limit_globe == "None"){
+      $('#limit_globe').css('color', 'black');
+      $('#limit_globe').html("Não definido")
+
+    } else {
+      $('#limit_globe').html(result_global_limit.toFixed(2));
+    }
+
   categories_ids.forEach((id_category_table) => {
 
-  var value_category_limit = $('#value_category_limit_' + id_category_table).text()
+    var value_category_limit = $('#value_category_limit_' + id_category_table).text()
   
-
   // Colors of Global Limit
-
-  if (result_global_limit < 0) {
-    $('#limit_globe').css('color', 'red')
-  }
-  if (result_global_limit == 0) {
-    $('#limit_globe').css('color', 'black')
-  }
-  if ((result_global_limit > 0) && (result_global_limit < 0.33 * limit_globe)) {
-    $('#limit_globe').css('color', 'orange')
-  }
-  if ((result_global_limit >= 0.33 * limit_globe) && (result_global_limit < 0.66 * limit_globe)) {
-    $('#limit_globe').css('color', '#d1cc2a')
-  }
-  if (result_global_limit >= 0.66 * limit_globe) {
-    $('#limit_globe').css('color', '#85bb65')
-  }
-
-  
-    var result_category_limit = value_category_limit;
+    if (result_global_limit < 0) {
+      $('#limit_globe').css('color', 'red')
+    }
+    if (result_global_limit == 0) {
+      $('#limit_globe').css('color', 'black')
+    }
+    if ((result_global_limit > 0) && (result_global_limit < 0.33 * limit_globe)) {
+      $('#limit_globe').css('color', 'orange')
+    }
+    if ((result_global_limit >= 0.33 * limit_globe) && (result_global_limit < 0.66 * limit_globe)) {
+      $('#limit_globe').css('color', '#d1cc2a')
+    } 
+    if (result_global_limit >= 0.66 * limit_globe) {
+      $('#limit_globe').css('color', '#85bb65')
+    }
+    if (ajax_running == true){
+      var value_category_limit_filtered = value_limit_by_category_id[id_category_table] 
+      var result_category_limit = value_category_limit_filtered
+    } else {
+      var result_category_limit = value_category_limit;
+    }
     $('.total_field[data-id="' + id_category_table + '"]').each( function () {
       
-      result_category_limit -= $(this).text();
+
+        result_category_limit -= $("#total_field_" + id_category_table).text();
+      
     })
     if (result_category_limit == NaN) {
       result_category_limit = 0
@@ -140,6 +173,7 @@ function calculate_table_limits(){
       $('#value_category_limit_' + id_category_table).css('color', '#85bb65')
     }
   });
+  });
 }
 $(function(){calculate_table_limits()});
 
@@ -161,6 +195,7 @@ $(function() {
       $(".limite_categoria").show()
       $('#value_limit_global').html(data.from);
       $('#value_limit_available').html(data.from);
+      calculate_available_limit_for_categories()
     }
   });
 
@@ -234,7 +269,7 @@ $(function() {
     var selected_category = parseInt($("#filter_category").val())
     $.ajax({
       type: "GET",
-      url: "/select_month_year_and_category/",
+      url: "/extrato/select_month_year_and_category/",
       dataType: 'html',
       data: {
         selected_month: selected_month,
@@ -245,8 +280,9 @@ $(function() {
         $("tbody").empty();
         $("#gasto_table").hide()
         $("#update_table_gasto").html(data)
-        calculate_table_limits()
-        
+        ajax_running = true
+        calculate_table_limits();
+        delete_button();
       }
     })
   })
@@ -258,7 +294,7 @@ $(function() {
     var selected_category = parseInt($("#filter_category").val())
     $.ajax({
       type: "GET",
-      url: "/select_month_year_and_category/",
+      url: "/extrato/select_month_year_and_category/",
       dataType: 'html',
       data: {
         selected_month: selected_month,
@@ -269,7 +305,9 @@ $(function() {
         $("tbody").empty();
         $("#gasto_table").hide()
         $("#update_table_gasto").html(data)
-        calculate_table_limits()
+        ajax_running = true
+        calculate_table_limits();
+        delete_button();
       }
     })
   })
@@ -282,7 +320,7 @@ $(function() {
     var selected_category = parseInt($(this).val())
     $.ajax({
       type: "GET",
-      url: "/select_month_year_and_category/",
+      url: "/extrato/select_month_year_and_category/",
       dataType: 'html',
       data: {
         selected_month: selected_month,
@@ -293,7 +331,9 @@ $(function() {
         $("tbody").empty();
         $("#gasto_table").hide()
         $("#update_table_gasto").html(data)
-        
+        ajax_running = true
+        calculate_table_limits();
+        delete_button();
       }
     })
   })
