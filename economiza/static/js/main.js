@@ -96,16 +96,16 @@ function calculate_table_limits(){
     var total_field = $('#total_field_' + id_total_category).text()
     $('#total').html(total_field_filtered)
     
-    var limit_globe = $('#limit_globe').text(); //pega o valor do limite global ele ta buscando o texto das duas variaveis (limit_globe = "valor global definido") (limit_globe_filter = "") se vazia (limit_globe_filter = "valor global definido")
-    var limit_globe_filter = $("#limit_globe_filter").text() //define uma variável vazia ("default = vazio") o nome dela me dá uma semantica estranha, veka, limit globe filter ela pega o valor do limite global, define em uma variavel vazia e depois eu uso ela para realizar as contas 
-    if (!limit_globe_filter) { //se for estiver vazio
-      $("#limit_globe_filter").html(limit_globe) //escreve o valor global nessa var do filter 
+    var limit_globe = $('#limit_globe').text(); 
+    var limit_globe_filter = $("#limit_globe_filter").text() 
+    if (!limit_globe_filter) {
+      $("#limit_globe_filter").html(limit_globe)
     }
     
     if (ajax_running == true){
       var result_global_limit =  limit_globe_filter - total_field_filtered;
     } else{
-      var result_global_limit =  limit_globe_filter - $("#total").text();
+      var result_global_limit =  $("#limit_globe_filter").text() - $("#total").text();
     }
     if (limit_globe == "None"){
       $('#limit_globe').css('color', 'black');
@@ -356,23 +356,28 @@ function calculate_available_limit_for_categories() {
     var available_limit = max_limit - used_limit
     $('#value_limit_available').html(available_limit.toFixed(2));
     if (available_limit < 0){
+      $('#label_to_distribute').show()
       $('#value_limit_available').css("color", "red")
     } 
     if (available_limit == 0){
       $('#value_limit_available').css("color", "black")
       $('#save_button').attr("disabled", false);
       $('#save_button').css('background-color', '#4d0270');
+      $('#label_to_distribute').hide()
     } else {
       $('#save_button').attr("disabled", true);
       $('#save_button').css('background-color', 'gray');
     }
     if ((available_limit > 0) && (available_limit < 0.33 * max_limit)) {
+      $('#label_to_distribute').show()
       $('#value_limit_available').css("color", "orange")
     }
     if ((available_limit >= 0.33 * max_limit) && (available_limit < 0.66 * max_limit)) {
+      $('#label_to_distribute').show()
       $('#value_limit_available').css("color", "#d1cc2a")
     } 
     if (available_limit >= 0.66 * max_limit) {
+      $('#label_to_distribute').show()
       $('#value_limit_available').css("color", "#85bb65")
     }
 }
